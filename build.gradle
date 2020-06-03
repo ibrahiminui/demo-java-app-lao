@@ -1,0 +1,101 @@
+buildscript {
+	ext {
+		springBootVersion = '2.2.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'jacoco'
+	id 'org.sonarqube' version '2.8'
+	id 'com.github.ben-manes.versions' version '0.27.0'
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	jacksonVersion = '2.10.0'
+	log4jVersion = '2.12.1'
+	slf4jVersion = '1.7.29'
+	springJerseyVersion = '2.2.1.RELEASE'
+}
+
+group = 'com.theonlydavidlee.demo'
+sourceCompatibility = 1.8
+
+configurations {
+	all {
+		// Exclude Spring logging stuff
+		exclude group: 'ch.qos.logback', module: 'logback-classic'
+		exclude group: 'ch.qos.logback', module: 'logback-core'
+		exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+		exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+	}
+}
+
+dependencies {
+	compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+	compile "org.slf4j:jul-to-slf4j:${slf4jVersion}"
+	compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+	compile "org.springframework.boot:spring-boot-starter-jersey:${springJerseyVersion}"
+
+	compile "org.apache.commons:commons-collections4:4.4"
+	compile "org.apache.commons:commons-lang3:3.9"
+
+	runtime "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+	runtime "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+	runtime "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+
+	testCompile "org.springframework.boot:spring-boot-starter-test:2.2.1.RELEASE"
+	testCompile "org.testng:testng:7.0.0"
+}
+
+version = '1.0.0'
+
+bootJar {
+	baseName = 'demoapp'
+	version =	'0.0.1'
+	mainClassName = 'com.theonlydavidlee.demo.Application'
+}
+
+test {
+	useTestNG()
+}
+
+def execFiles = fileTree("${buildDir}/jacoco").include("*.exec")
+jacocoTestReport {
+	getExecutionData().from(execFiles)
+}
+jacocoTestCoverageVerification {
+	getExecutionData().from(execFiles)
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.43
+			}
+		}
+		rule {
+			limit {
+				counter = 'CLASS'
+				minimum = 0.40
+			}
+		}
+	}
+}
+
+wrapper {
+	gradleVersion = '6.0'
+}

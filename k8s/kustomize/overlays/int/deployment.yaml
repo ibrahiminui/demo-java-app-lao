@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-java-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: demo-java-app
+        resources:
+          requests:
+            cpu: 100m
+            memory: 320M
+          limits:
+            cpu: 100m
+            memory: 320M
