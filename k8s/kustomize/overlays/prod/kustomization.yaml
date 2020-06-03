@@ -7,6 +7,3 @@ resources:
 - ingress.yaml
 patchesStrategicMerge:
 - deployment.yaml
-images:
-- name: us.gcr.io/theonlydavidlee-work-1/demo-java-app
-  newTag: "2"
