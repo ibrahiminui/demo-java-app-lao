@@ -10,8 +10,8 @@ spec:
       - name: demo-java-app
         resources:
           requests:
-            cpu: 100m
+            cpu: 500m
             memory: 320M
           limits:
-            cpu: 100m
+            cpu: 500m
             memory: 320M
